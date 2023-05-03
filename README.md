@@ -1,11 +1,14 @@
 # Contenda App
-You can import your AI generated blogs straight from contenda!
+You can export your Contenda generated blogs straight into Contentful!
 
-How to use the Contenda app on the Contentful UI
-1. Install the app and configure your app with your contenda account api key and email
-2. Go to your blog post content model and find the settings for the rich text field where your blog content would be
-3. Change the appearance settings to be the "Contenda App"
-4. Now, in your blog post content, you should see a button "Choose a Contenda Blog"
+## How to use the Contenda app on the Contentful UI
+1. Install the app and configure your app with your contenda account api key and email <img width="550" alt="image" src="https://user-images.githubusercontent.com/85570495/236056897-20d17fd3-3463-4f8f-b257-977a8ed7956b.png">
+  
+2. Go to whatever you use for your blog post content model and find the settings for the rich text field where your blog content would be
+3. Change the appearance settings to be the "Contenda App" <img width="600" alt="image" src="https://user-images.githubusercontent.com/85570495/236057323-10d418bf-ec86-4a1e-a80f-b65883eb7a60.png">
+  
+4. Now, in your blog content field, you should see a button "Choose a Contenda Blog" <img width="700" alt="image" src="https://user-images.githubusercontent.com/85570495/236057541-02c428b8-4db6-4b50-9bbf-aace88a85bbb.png">
+
 5. Select the desired blog, and the field will be populated with the blog content from Contenda
 
 ---
