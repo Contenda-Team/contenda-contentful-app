@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RichTextEditor } from '@contentful/field-editor-rich-text';
-import { Form, FormControl, Button, Text } from '@contentful/f36-components';
+import { Form, FormControl, Button, Note } from '@contentful/f36-components';
 import { useCMA, useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
+import { ValidationError } from '@contentful/app-sdk';
 
 
 const Field = () => {
   const sdk = useSDK();
+  const [adviceErrorMessages, setAdviceErrorMessages] = useState([])
+
   useAutoResizer()
 
   const handleButtonClick = async () => {
@@ -44,6 +47,20 @@ const Field = () => {
     console.log(sdk.field);
   }
 
+  useEffect(() => {
+    sdk.field.onSchemaErrorsChanged((errors) => {
+      let messagesToRender = []
+      for (const error of errors) {
+        if (error.name === "enabledNodeTypes" && !error.message.includes("block asset")) {
+          messagesToRender.push(<Note variant="neutral">Check the field's settings to enable "Embedded Assets"</Note>)
+        } else if (error.name === "size") {
+          messagesToRender.push(<Note variant="neutral">Check the field's settings to increase the limit number of Embedded Assets</Note>)
+        }
+      }
+      setAdviceErrorMessages(messagesToRender)
+    })
+  }, [sdk.field.validation])
+
 
   return (
     <>
@@ -53,6 +70,7 @@ const Field = () => {
         </FormControl>
       </Form>
       <RichTextEditor sdk={sdk} isInitiallyDisabled={true} />
+      {adviceErrorMessages}
     </>
   )
 };
