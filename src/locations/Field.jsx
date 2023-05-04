@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RichTextEditor } from '@contentful/field-editor-rich-text';
-import { Form, FormControl, Button, Text } from '@contentful/f36-components';
-import { useCMA, useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
+import { Form, FormControl, Button, Text, Note } from '@contentful/f36-components';
+import {  useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
 
 
 const Field = () => {
   const sdk = useSDK();
 
   const [mediaName, setMediaName] = useState()
+  const [adviceErrorMessages, setAdviceErrorMessages] = useState([])  // custom notes when specific validation errors are present
 
   useAutoResizer()
 
@@ -21,38 +22,6 @@ const Field = () => {
     })
     if (blog_data) {
       setResultDocument(blog_data)
-      // const resultDocument = {
-      //   "nodeType": "document",
-      //   "data": {},
-      //   "content": [
-      //     {
-      //       "nodeType": "paragraph",
-      //       "data": {},
-      //       "content": [
-      //         {
-      //           "nodeType": "text",
-      //           "value": "hello",
-      //           "marks": [],
-      //           "data": {}
-      //         }
-      //       ]
-      //     },
-      //     {
-      //       "nodeType": "embedded-entry-asset",
-      //       "content": [],
-      //       "data": {
-      //         "target": {
-      //           "sys": {
-      //             "id": "c0c873fe-599f-482d-ba96-bdf336683e3c",
-      //             "type": "Link",
-      //             "linkType": "Asset"
-      //           }
-      //         }
-      //       }
-      //     }
-      //   ]
-      // }
-      // sdk.field.setValue(resultDocument)
     }
   }
 
@@ -91,8 +60,6 @@ const Field = () => {
           ]
         }
       } else if (segment.segment_type === "image" || segment.segment_type === "user_image") {
-        continue // remove later when supporting images
-        console.log("image ", segment);
         node = {
           "nodeType": "embedded-asset-block",
           "content": [],
@@ -131,6 +98,19 @@ const Field = () => {
     setMediaName(blog.segments[0]?.title)
   }
 
+  useEffect(() => {
+    sdk.field.onSchemaErrorsChanged((errors) => {
+      let messagesToRender = []
+      for (const error of errors) {
+        if (error.name === "enabledNodeTypes" && !error.message.includes("block asset")) {
+          messagesToRender.push(<Note variant="neutral">Check the field's settings to enable "Embedded Assets"</Note>)
+        } else if (error.name === "size") {
+          messagesToRender.push(<Note variant="neutral">Check the field's settings to increase the limit number of Embedded Assets</Note>)
+        }
+      }
+      setAdviceErrorMessages(messagesToRender)
+    })
+  }, [sdk.field.validation])
 
   return (
     <>
@@ -142,8 +122,8 @@ const Field = () => {
         </FormControl>
       </Form>
       {mediaName !== undefined ? <Text>Media title: {mediaName}</Text> : undefined}
-      {/* {documentToReactComponents(sdk.field.getValue(), renderOptions)} */}
       <RichTextEditor sdk={sdk} isInitiallyDisabled={true} />
+      {adviceErrorMessages}
     </>
   )
 };

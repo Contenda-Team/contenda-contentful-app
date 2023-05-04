@@ -52,8 +52,8 @@ const Dialog = () => {
     setIsUploadingImages(true)
     for (let segment of blog.segments) {
       if (segment.segment_type === "image" || segment.segment_type === "user_image") {
-        // await addImageAsset("image title", segment)
-        //   .then((asset) => console.log("fetchBlog", asset))
+        await addImageAsset("image title", segment)
+          .then((asset) => console.log("fetchBlog", asset))
       }
     }
     setIsUploadingImages(false)
@@ -89,12 +89,22 @@ const Dialog = () => {
     fetchAllBlogsData()
   }, [sdk.parameters.invocation])
 
-  if (!contendaBlogs || isUploadingImages) {
-    return <Flex justifyContent="center">
-      <Text marginRight="spacingXs">Fetching blog</Text>
-      <Spinner />
-    </Flex>
+  if (!contendaBlogs) {
+    return (
+      <Flex justifyContent="center">
+        <Text marginRight="spacingXs">Fetching blog</Text>
+        <Spinner />
+      </Flex>
+    )
+  } else if (isUploadingImages) {
+    return (
+      <Flex justifyContent="center">
+        <Text marginRight="spacingXs">Uploading blog image assets</Text>
+        <Spinner />
+      </Flex>
+    )
   }
+
   return (
     <Stack fullWidth>
       <EntityList style={{
@@ -105,6 +115,8 @@ const Dialog = () => {
             return (<EntityList.Item
               key={blog.id}
               title={blog.title}
+              entityType={"Page"}
+              description={`Created: ${blog.created_at?.substring(0,10)}`}
               onClick={() => fetchBlog(blog.id)}
             />)
           })
