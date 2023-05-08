@@ -15,6 +15,10 @@ const Dialog = () => {
   const { email, apiKey } = sdk.parameters.installation;
 
   const fetchAllBlogsData = async () => {
+    console.log("dialog sdk:", sdk);
+    const contentTypeData = await cma.contentType.get({"contentTypeId": sdk.parameters.invocation.contentTypeId})
+    console.log("contentTypeData:", contentTypeData);
+
     const getTokenUrl = `${BASE_URL}/api/v2/identity/token`
     const getAllBlogsUrl = `${BASE_URL}/api/v2/content/blog/list`
 
