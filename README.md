@@ -4,9 +4,13 @@ This Contenda app connects your AI-transformed content straight into your Conten
 With Contenda, take any video, from a conference talk to an interview to a demo, and turn it into effective written content. This app makes it easy for you to publish and scale that content on Contentful. The blog images from your video are also automatically uploaded to your Media and embedded in the blog field.
 
 
+## Features:
+- Import your blog content transformed from your videos with Contenda
+- Atuomatically upload blog images from your Contenda blog to your Media
+
 ## Requirements:
 - A [Contenda](https://contenda.co/) account (sign up [here](https://signup.contenda.co/))
-- Blog content is using rich text field 
+- Blog content is in a rich text field 
 
 ## Instructions
 1. After installing, configure your app with your contenda account email and api key.
