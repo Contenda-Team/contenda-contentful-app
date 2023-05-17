@@ -50,14 +50,16 @@ const Dialog = () => {
     blog.id = blogId
 
     setIsUploadingImages(true)
+    let addImagePromises = []
     for (let segment of blog.segments) {
       if (segment.segment_type === "image" || segment.segment_type === "user_image") {
-        await addImageAsset("image title", segment)
-          .then((asset) => console.log("fetchBlog", asset))
+        addImagePromises.push(addImageAsset("contenda image", segment).then((asset) => console.log("fetchBlog", asset)))
       }
     }
-    setIsUploadingImages(false)
-    sdk.close(blog)
+    Promise.all(addImagePromises).then(() => {
+      setIsUploadingImages(false)
+      sdk.close(blog)
+    })
   }
 
   const addImageAsset = async (assetTitle, imageSegment) => {
@@ -81,7 +83,6 @@ const Dialog = () => {
       // .then((asset) => cma.asset.publish({ assetId: asset.sys.id }, asset))
       .catch((err) => console.log(err))
 
-    console.log("addImageAsset: ", asset);
     return asset
   }
 
