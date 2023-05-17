@@ -51,9 +51,11 @@ const Dialog = () => {
 
     setIsUploadingImages(true)
     let addImagePromises = []
+    let image_idx = 1
     for (let segment of blog.segments) {
       if (segment.segment_type === "image" || segment.segment_type === "user_image") {
-        addImagePromises.push(addImageAsset("contenda image", segment).then((asset) => console.log("fetchBlog", asset)))
+        addImagePromises.push(addImageAsset("Contenda Blog Image " + image_idx, segment).then((asset) => console.log("fetchBlog", asset)))
+        image_idx++
       }
     }
     Promise.all(addImagePromises).then(() => {
