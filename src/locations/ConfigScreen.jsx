@@ -51,7 +51,8 @@ const ConfigScreen = () => {
       };   
     } else {
       setIsInvalid(true)
-      return currentState
+      sdk.notifier.error("Invalid email or api key - fix before installing.");
+      return false;
     }
   }, [parameters, sdk]);
 
@@ -60,7 +61,7 @@ const ConfigScreen = () => {
     // invoked when a user attempts to install the app or update
     // its configuration.
     sdk.app.onConfigure(() => onConfigure());
-  }, [sdk, onConfigure, isInvalid]);
+  }, [sdk, onConfigure]);
 
 
   useEffect(() => {
@@ -99,7 +100,7 @@ const ConfigScreen = () => {
             Don't have one? Sign up at <TextLink href="https://signup.contenda.co/">here</TextLink>
           </FormControl.HelpText>
           {isInvalid && (
-            <FormControl.ValidationMessage>Invalid email or api key</FormControl.ValidationMessage>
+            <FormControl.ValidationMessage>Invalid email or api key. Contact support@contenda.co for help.</FormControl.ValidationMessage>
           )}          
         </FormControl>
       </Form>

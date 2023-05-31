@@ -105,7 +105,7 @@ const Field = () => {
   }
 
   const enableAssetValidation = async () => {
-    console.log("enableAssetValidation");
+    // console.log("enableAssetValidation");
     sdk.contentType.enabledNodeTypes("embedded-asset-block")
     const contentTypeId = sdk.contentType.sys.id
     let contentTypeData = await cma.contentType.get({ "contentTypeId": contentTypeId })
@@ -113,7 +113,7 @@ const Field = () => {
     let enabledTypesValidationRule = fieldData.validations.find(validation => "enabledNodeTypes" in validation)
 
     if (enabledTypesValidationRule && !enabledTypesValidationRule.enabledNodeTypes.includes("embedded-asset-block")) {
-      console.log("need to edit validation");
+      // console.log("need to edit validation");
       
       enabledTypesValidationRule.enabledNodeTypes.push("embedded-asset-block")
       enabledTypesValidationRule.message = "Only heading 1, heading 2, heading 3, heading 4, heading 5, heading 6, ordered list, unordered list, horizontal rule, quote, block entry, table, link to Url, link to entry, inline entry, and asset nodes are allowed"
