@@ -3,12 +3,29 @@ import { TextLink, TextInput, Form, FormControl, Flex } from '@contentful/f36-co
 import { css } from 'emotion';
 import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
 
+const BASE_URL = "https://prod.contenda.io"
+
 const ConfigScreen = () => {
   const [parameters, setParameters] = useState({
     apiKey: "",
     email: ""
   });
+  const [isInvalid, setIsInvalid] = useState(false);  
   const sdk = useSDK();
+
+  const isGetTokenOk = async (inputEmail, inputApiKey) => {
+    // getting the Contenda token and if there's no error then true
+    const getTokenUrl = `${BASE_URL}/api/v2/identity/token`
+    const tokenResponse = await fetch(getTokenUrl, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: inputEmail,
+        api_key: inputApiKey
+      }),
+    })
+    return tokenResponse.ok
+  }
   /*
      To use the cma, inject it as follows.
      If it is not needed, you can remove the next line.
@@ -22,13 +39,20 @@ const ConfigScreen = () => {
     // Get current the state of EditorInterface and other entities
     // related to this app installation
     const currentState = await sdk.app.getCurrentState();
-    return {
-      // Parameters to be persisted as the app configuration.
-      parameters,
-      // In case you don't want to submit any update to app
-      // locations, you can just pass the currentState as is
-      targetState: currentState,
-    };
+    const isUserValid = await isGetTokenOk(parameters.email, parameters.apiKey)
+    if (isUserValid) {
+      setIsInvalid(false)
+      return {
+        // Parameters to be persisted as the app configuration.
+        parameters,
+        // In case you don't want to submit any update to app
+        // locations, you can just pass the currentState as is
+        targetState: currentState,
+      };   
+    } else {
+      setIsInvalid(true)
+      return currentState
+    }
   }, [parameters, sdk]);
 
   useEffect(() => {
@@ -36,7 +60,8 @@ const ConfigScreen = () => {
     // invoked when a user attempts to install the app or update
     // its configuration.
     sdk.app.onConfigure(() => onConfigure());
-  }, [sdk, onConfigure]);
+  }, [sdk, onConfigure, isInvalid]);
+
 
   useEffect(() => {
     (async () => {
@@ -55,24 +80,27 @@ const ConfigScreen = () => {
   return (
     <Flex flexDirection="column" className={css({ margin: '80px', maxWidth: '800px' })}>
       <Form>
-        <FormControl>
+        <FormControl isRequired isInvalid={isInvalid}>
         <FormControl.Label>Contenda Username (email)</FormControl.Label>
           <TextInput
             value={parameters.email}
-            type='text'
+            type='email'
             onChange={(e) => setParameters({ ...parameters, email: e.target.value })}
           />
         </FormControl>
-        <FormControl>
+        <FormControl isRequired isInvalid={isInvalid}>
           <FormControl.Label>API Key</FormControl.Label>
           <TextInput
             value={parameters.apiKey}
-            type='text'
+            type='password'
             onChange={(e) => setParameters({ ...parameters, apiKey: e.target.value })}
           />
           <FormControl.HelpText>
             Don't have one? Sign up at <TextLink href="https://signup.contenda.co/">here</TextLink>
           </FormControl.HelpText>
+          {isInvalid && (
+            <FormControl.ValidationMessage>Invalid email or api key</FormControl.ValidationMessage>
+          )}          
         </FormControl>
       </Form>
     </Flex>
