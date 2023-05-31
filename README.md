@@ -1,15 +1,27 @@
 # Contenda App
 This Contenda app connects your AI-transformed content straight into your Contentful blog entries. 
 
-With Contenda, take any video, from a conference talk to an interview to a demo, and turn it into effective written content. This app makes it easy for you to publish and scale that content on Contentful. The blog images from your video are also automatically uploaded to your Media and embedded in the blog field.
+With Contenda, save hours of your time creating new content and, instead, make the most out of your content by taking videos and turning it into effective written content. Any video, from a conference talk to an interview to a demo, can be transformed into a blog that comes with smart image and code detection.
+
+This app then makes it easy for you to publish and scale that content on Contentful.
+
+The blog images from your video are also automatically uploaded to your Media and embedded in the blog field.
+
+
+## Overview:
+- Import your blog content transformed from your videos with Contenda
+- Automatically upload blog images from your Contenda blog to your Media
 
 
 ## Requirements:
+To use this app, you will need the following:
 - A [Contenda](https://contenda.co/) account (sign up [here](https://signup.contenda.co/))
-- Blog content is using rich text field 
+- Blog content is in a rich text field
 
-## Instructions
-1. After installing, configure your app with your contenda account email and api key.
+
+## Usage
+1. This app requires a Contenda account. Sign up [here](https://signup.contenda.co/)
+After installing, configure your app with your contenda account email and api key. <img width="550" alt="image" src="https://user-images.githubusercontent.com/85570495/236056897-20d17fd3-3463-4f8f-b257-977a8ed7956b.png">
   
 2. Go to the content model you use for you blog posts and find the settings for the rich text field where your blog content would be. Change the appearance settings to be the "Contenda App" <img width="555" alt="image" src="https://user-images.githubusercontent.com/85570495/236057323-10d418bf-ec86-4a1e-a80f-b65883eb7a60.png">
   
