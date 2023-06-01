@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { RichTextEditor } from '@contentful/field-editor-rich-text';
-import { Form, FormControl, Button, Text, Note, ModalLauncher } from '@contentful/f36-components';
-import { useSDK, useAutoResizer, useCMA } from '@contentful/react-apps-toolkit';
+import { Form, FormControl, Button, Text, Note } from '@contentful/f36-components';
+import { useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
 
 
 const Field = () => {
   let sdk = useSDK();
-  const cma = useCMA()
 
   const [mediaName, setMediaName] = useState()
   const [adviceErrorNotes, setAdviceErrorNotes] = useState([])  // custom notes when specific validation errors are present

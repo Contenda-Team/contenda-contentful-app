@@ -8,24 +8,28 @@ const Dialog = () => {
   const sdk = useSDK();
   const cma = useCMA();
 
+  console.log("sdk", sdk);
+
   useAutoResizer();
   const [token, setToken] = useState()
   const [contendaBlogs, setContendaBlogs] = useState([])
   const [isUploadingImages, setIsUploadingImages] = useState(false)
-  const [allowAutoImportBlogImages, setAllowAutoImportBlogImages] = useState()
+  const [allowAutoImportBlogImages, setAllowAutoImportBlogImages] = useState(sdk.parameters.instance.allowAutoImportBlogImages)
 
   const { email, apiKey } = sdk.parameters.installation;
-
 
   const saveAllowAutoImportBlogImages = async (value) => {
     cma.editorInterface.get({ contentTypeId: sdk.ids.contentType }).then(
       (editor) => {
-        let fieldControl = editor.controls.find(control => control.fieldId == sdk.ids.field)
+        console.log("inside cma get", value, editor);
+        let fieldControl = editor.controls.find(control => control.fieldId === sdk.ids.field)
         fieldControl.settings.allowAutoImportBlogImages = value
         setAllowAutoImportBlogImages(value)
-        return cma.editorInterface.update({ contentTypeId: sdk.ids.contentType }, editor)
+        cma.editorInterface.update({ contentTypeId: sdk.ids.contentType }, editor)
+          .catch(err => console.error(err))
       }
     )
+      .catch(err => console.error(err))
   }
 
   const fetchAllBlogsData = async () => {
@@ -70,7 +74,7 @@ const Dialog = () => {
       // let contentTypeData = await cma.contentType.get({ "contentTypeId": sdk.ids.contentType })
       // let fieldData = contentTypeData.fields.find(field => field.id == sdk.ids.field)
       // let enabledTypesValidationRule = fieldData.validations.find(validation => "enabledNodeTypes" in validation)
-  
+
       // if (enabledTypesValidationRule && !enabledTypesValidationRule.enabledNodeTypes.includes("embedded-asset-block")) {
       //   await sdk.dialogs.openConfirm({
       //     title: "Your field settings don't allow for embedded blog images",
@@ -140,7 +144,7 @@ const Dialog = () => {
   const enableEmbeddedAssets = async () => {
     const contentTypeId = sdk.ids.contentType
     let contentTypeData = await cma.contentType.get({ "contentTypeId": contentTypeId })
-    let fieldData = contentTypeData.fields.find(field => field.id == sdk.ids.field)
+    let fieldData = contentTypeData.fields.find(field => field.id === sdk.ids.field)
     let enabledTypesValidationRule = fieldData.validations.find(validation => "enabledNodeTypes" in validation)
 
     enabledTypesValidationRule.enabledNodeTypes.push("embedded-asset-block")
@@ -153,16 +157,6 @@ const Dialog = () => {
   useEffect(() => {
     fetchAllBlogsData()
   }, [sdk.parameters.invocation])
-
-  useEffect(() => {
-    cma.editorInterface.get({ contentTypeId: sdk.ids.contentType }).then(
-      (editor) => {
-        const allow = editor.controls.find(control => control.fieldId == sdk.ids.field).settings?.allowAutoImportBlogImages
-        setAllowAutoImportBlogImages(allow)
-      })
-  }, [sdk.editor])
-
-  useEffect(() => {console.log("useEffect sdk.contentType", sdk.contentType);}, [sdk.contentType])  
 
   if (!contendaBlogs) {
     return (
