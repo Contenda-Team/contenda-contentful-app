@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RichTextEditor } from '@contentful/field-editor-rich-text';
-import { Form, FormControl, Button, Text, Note } from '@contentful/f36-components';
+import { Form, FormControl, Button, Text, Note, TextLink } from '@contentful/f36-components';
 import { useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
 
 
@@ -105,13 +105,32 @@ const Field = () => {
   useEffect(() => {
     sdk.field.onSchemaErrorsChanged((errors) => {
       let messagesToRender = []
+      console.log("sdk in field", sdk);
+      const settingsUrl = `https://app.contentful.com/spaces/${sdk.ids.space}/content_types/${sdk.ids.contentType}/fields`
+      const settingsUrlComponent = (
+        <TextLink
+          href={settingsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >here</TextLink>
+      )
       for (const error of errors) {
         if (error.name === "enabledNodeTypes" && !error.message.includes("block asset")) {
           sdk.notifier.error('Check field settings and enable "Embedded Assets"');
-          messagesToRender.push(<Note variant="negative">Check field settings and enable "Embedded Assets"</Note>)
+          messagesToRender.push(
+            <Note variant="negative">
+              Check field settings and enable "Embedded Assets" {settingsUrlComponent} -
+              <Text fontWeight="fontWeightDemiBold"> refresh the page to see applied changes!</Text>
+            </Note>
+          )
         } else if (error.name === "size") {
           sdk.notifier.warning("Remove images or increase the Embedded Assets limit in the field settings");
-          messagesToRender.push(<Note variant="warning">Remove images or increase the Embedded Assets limit in the field settings</Note>)
+          messagesToRender.push(
+            <Note variant="warning">
+              Remove images or increase the Embedded Assets limit in the field settings {settingsUrlComponent} -
+              <Text fontWeight="fontWeightDemiBold"> refresh the page to see applied changes!</Text>
+            </Note>
+          )
         }
       }
       setAdviceErrorNotes(messagesToRender)

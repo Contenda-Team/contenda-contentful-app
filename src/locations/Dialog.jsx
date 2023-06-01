@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner, Stack, EntityList, Flex, Text, Switch } from '@contentful/f36-components';
+import { Spinner, Stack, EntityList, Flex, Text, Switch, Note } from '@contentful/f36-components';
 import { useCMA, useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
 
 const BASE_URL = "https://prod.contenda.io"
@@ -176,7 +176,18 @@ const Dialog = () => {
 
   return (
     <Stack fullWidth flexDirection="column" spacing="none">
-      <Flex margin="spacingS" alignSelf="flex-start">
+      <Flex
+        margin="spacingS"
+        gap="spacingS"
+        alignSelf="flex-start"
+        flexDirection="column"
+        alignSelf="center"
+      >
+        <Note
+          variant='primary'
+          style={{width: '660px'}}
+        >Remember to adjust your embed option below!
+        </Note>
         <Switch
           name="allow-image-autoimport"
           id="allow-image-autoimport"
