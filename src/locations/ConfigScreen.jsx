@@ -61,7 +61,8 @@ const ConfigScreen = () => {
     // invoked when a user attempts to install the app or update
     // its configuration.
     sdk.app.onConfigure(() => onConfigure());
-  }, [sdk, onConfigure]);
+  }, [sdk, onConfigure, isInvalid]);
+
 
 
   useEffect(() => {
