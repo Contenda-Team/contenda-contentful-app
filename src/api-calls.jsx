@@ -1,5 +1,5 @@
-// const BASE_URL = "https://prod.contenda.co"
-const BASE_URL = "https://noodle.contenda.co"
+const BASE_URL = "https://prod.contenda.co"
+// const BASE_URL = "https://noodle.contenda.co"
 
 /**
  * With the latest v3 auth update, distinguish if the api key is for v3.
