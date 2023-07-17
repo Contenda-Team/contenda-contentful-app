@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Spinner, Stack, EntityList, Flex, Text, Switch, Note } from '@contentful/f36-components';
 import { useCMA, useSDK, useAutoResizer } from '@contentful/react-apps-toolkit';
 
-const BASE_URL = "https://prod.contenda.io"
+import { getToken, getBlogList, getBlog, isAcceptableV3ApiKey } from '../api-calls'
+
 
 const Dialog = () => {
   const sdk = useSDK();
@@ -33,36 +34,16 @@ const Dialog = () => {
   }
 
   const fetchAllBlogsData = async () => {
-    const getTokenUrl = `${BASE_URL}/api/v2/identity/token`
-    const getAllBlogsUrl = `${BASE_URL}/api/v2/content/blog/list`
-
-    // get token
-    const tokenResponse = await fetch(getTokenUrl, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        api_key: apiKey
-      }),
-    })
-    const tokenData = await tokenResponse.json();
-    const token = tokenData.access_token
+    const token = await getToken(email, apiKey)
     setToken(token)
-
-    // get blogs list
-    const allBlogsResponse = await fetch(`${getAllBlogsUrl}?token=${token}`)
-    const allBlogs = await allBlogsResponse.json();
+    const allBlogs = await getBlogList(token, apiKey)
     console.log("allBlogs: ", allBlogs);
 
     setContendaBlogs(allBlogs);
   }
 
   const handleBlogSelection = async (blogId) => {
-    console.log("token: ", token);
-    const getBlogUrl = `${BASE_URL}/api/v2/content/blog/${blogId}`
-
-    const blogResponse = await fetch(`${getBlogUrl}?token=${token}`)
-    let blog = await blogResponse.json();
+    const blog = await getBlog(blogId, token, apiKey)
     console.log(blogId, "blog: ", blog);
 
     blog.id = blogId
@@ -179,7 +160,6 @@ const Dialog = () => {
       <Flex
         margin="spacingS"
         gap="spacingS"
-        alignSelf="flex-start"
         flexDirection="column"
         alignSelf="center"
       >

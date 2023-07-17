@@ -1,31 +1,19 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { TextLink, TextInput, Form, FormControl, Flex } from '@contentful/f36-components';
+import { TextLink, TextInput, Form, FormControl, Flex, Note } from '@contentful/f36-components';
 import { css } from 'emotion';
 import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
+import { getToken, isAcceptableV3ApiKey } from '../api-calls'
 
-const BASE_URL = "https://prod.contenda.io"
 
 const ConfigScreen = () => {
   const [parameters, setParameters] = useState({
     apiKey: "",
     email: ""
   });
-  const [isInvalid, setIsInvalid] = useState(false);  
+  const [isInvalid, setIsInvalid] = useState(false);
+  const [needsUpdateToV3, setNeedsUpdateToV3] = useState(isAcceptableV3ApiKey(parameters.apiKey));  
   const sdk = useSDK();
 
-  const isGetTokenOk = async (inputEmail, inputApiKey) => {
-    // getting the Contenda token and if there's no error then true
-    const getTokenUrl = `${BASE_URL}/api/v2/identity/token`
-    const tokenResponse = await fetch(getTokenUrl, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: inputEmail,
-        api_key: inputApiKey
-      }),
-    })
-    return tokenResponse.ok
-  }
   /*
      To use the cma, inject it as follows.
      If it is not needed, you can remove the next line.
@@ -39,9 +27,12 @@ const ConfigScreen = () => {
     // Get current the state of EditorInterface and other entities
     // related to this app installation
     const currentState = await sdk.app.getCurrentState();
-    const isUserValid = await isGetTokenOk(parameters.email, parameters.apiKey)
+    const token = await getToken(parameters.email, parameters.apiKey)
+    const isUserValid = token !== false
     if (isUserValid) {
       setIsInvalid(false)
+      setNeedsUpdateToV3(!isAcceptableV3ApiKey(parameters.apiKey))
+      sdk.notifier.success("Valid token");
       return {
         // Parameters to be persisted as the app configuration.
         parameters,
@@ -51,7 +42,7 @@ const ConfigScreen = () => {
       };   
     } else {
       setIsInvalid(true)
-      sdk.notifier.error("Invalid email or api key - fix before installing.");
+      sdk.notifier.error("Invalid email or api key - fix before using the app.");
       return false;
     }
   }, [parameters, sdk]);
@@ -73,6 +64,7 @@ const ConfigScreen = () => {
       if (currentParameters) {
         setParameters(currentParameters);
       }
+      setNeedsUpdateToV3(!isAcceptableV3ApiKey(parameters.apiKey))
       // Once preparation has finished, call `setReady` to hide
       // the loading screen and present the app to a user.
       sdk.app.setReady();
@@ -102,7 +94,12 @@ const ConfigScreen = () => {
           </FormControl.HelpText>
           {isInvalid && (
             <FormControl.ValidationMessage>Invalid email or api key. Contact support@contenda.co for help.</FormControl.ValidationMessage>
-          )}          
+          )}
+          {(!isInvalid && needsUpdateToV3) && (
+            <Note variant="warning">
+              Update your api key with the one in your dashboard on the <TextLink href="https://app.contenda.co/">Contenda App</TextLink>
+            </Note>
+          )}
         </FormControl>
       </Form>
     </Flex>
