@@ -9,7 +9,7 @@ const Dialog = () => {
   const sdk = useSDK();
   const cma = useCMA();
 
-  console.log("sdk", sdk);
+  // console.log("sdk", sdk);
 
   useAutoResizer();
   const [token, setToken] = useState()
@@ -24,6 +24,9 @@ const Dialog = () => {
       (editor) => {
         console.log("inside cma get", value, editor);
         let fieldControl = editor.controls.find(control => control.fieldId === sdk.ids.field)
+        // when user first installs app, this field doesn't have a settings when it should...
+        // define settings to empty dict if undefined
+        fieldControl.settings = fieldControl.settings == undefined ? {} : fieldControl.settings
         fieldControl.settings.allowAutoImportBlogImages = value
         setAllowAutoImportBlogImages(value)
         cma.editorInterface.update({ contentTypeId: sdk.ids.contentType }, editor)
@@ -31,6 +34,9 @@ const Dialog = () => {
       }
     )
       .catch(err => console.error(err))
+      // updating using the editor doesn't actually change the value of the instance parameter like the documentation says...
+      // https://www.contentful.com/developers/docs/extensibility/app-framework/app-parameters/#instance-parameters
+      // for now, 
   }
 
   const fetchAllBlogsData = async () => {
@@ -45,9 +51,7 @@ const Dialog = () => {
   const handleBlogSelection = async (blogId) => {
     const blog = await getBlog(blogId, token, apiKey)
     console.log(blogId, "blog: ", blog);
-
     blog.id = blogId
-
     console.log("allowAutoImportBlogImages: ", allowAutoImportBlogImages);
 
     if (allowAutoImportBlogImages) {

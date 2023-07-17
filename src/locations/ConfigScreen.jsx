@@ -11,7 +11,9 @@ const ConfigScreen = () => {
     email: ""
   });
   const [isInvalid, setIsInvalid] = useState(false);
-  const [needsUpdateToV3, setNeedsUpdateToV3] = useState(isAcceptableV3ApiKey(parameters.apiKey));  
+  const [needsUpdateToV3, setNeedsUpdateToV3] = useState(
+    parameters.apiKey.length > 0 && !isAcceptableV3ApiKey(parameters.apiKey)
+  );
   const sdk = useSDK();
 
   /*
@@ -64,7 +66,9 @@ const ConfigScreen = () => {
       if (currentParameters) {
         setParameters(currentParameters);
       }
-      setNeedsUpdateToV3(!isAcceptableV3ApiKey(parameters.apiKey))
+      setNeedsUpdateToV3(
+        parameters.apiKey.length > 0 && !isAcceptableV3ApiKey(parameters.apiKey)
+      )
       // Once preparation has finished, call `setReady` to hide
       // the loading screen and present the app to a user.
       sdk.app.setReady();
@@ -90,14 +94,14 @@ const ConfigScreen = () => {
             onChange={(e) => setParameters({ ...parameters, apiKey: e.target.value })}
           />
           <FormControl.HelpText>
-            Don't have one? Sign up at <TextLink href="https://signup.contenda.co/">here</TextLink>
+            Don't have one? Generate a key from your <TextLink href="https://app.contenda.co/">Contenda dashboard</TextLink> settings
           </FormControl.HelpText>
           {isInvalid && (
             <FormControl.ValidationMessage>Invalid email or api key. Contact support@contenda.co for help.</FormControl.ValidationMessage>
           )}
           {(!isInvalid && needsUpdateToV3) && (
             <Note variant="warning">
-              Update your api key with the one in your dashboard on the <TextLink href="https://app.contenda.co/">Contenda App</TextLink>
+              Update your api key with the one in your dashboard from the <TextLink href="https://app.contenda.co/">Contenda App</TextLink>
             </Note>
           )}
         </FormControl>
