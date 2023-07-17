@@ -26,7 +26,7 @@ const Dialog = () => {
         let fieldControl = editor.controls.find(control => control.fieldId === sdk.ids.field)
         // when user first installs app, this field doesn't have a settings when it should...
         // define settings to empty dict if undefined
-        fieldControl.settings = fieldControl.settings == undefined ? {} : fieldControl.settings
+        fieldControl.settings = fieldControl.settings === undefined ? {} : fieldControl.settings
         fieldControl.settings.allowAutoImportBlogImages = value
         setAllowAutoImportBlogImages(value)
         cma.editorInterface.update({ contentTypeId: sdk.ids.contentType }, editor)
