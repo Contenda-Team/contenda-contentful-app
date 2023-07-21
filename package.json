@@ -17,7 +17,7 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "start": "cross-env BROWSER=none react-scripts start",
+    "start": "PORT=5173 cross-env BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
